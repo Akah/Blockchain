@@ -40,8 +40,8 @@ class Block {
 
 
     boolean isValid(Block oldBlock, Block newBlock){
-        return oldBlock.getIndex()==newBlock.getIndex() &&
-                !oldBlock.getCurrentHash().equals(newBlock.getPreviousHash());
+        return oldBlock.getIndex()==newBlock.getIndex()-1 &&
+                oldBlock.getCurrentHash().equals(newBlock.getPreviousHash());
     }
 
 }

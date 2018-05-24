@@ -1,6 +1,4 @@
-import org.apache.commons.codec.digest.DigestUtils;
-
-public class Block {
+class Block {
 
     private String previousHash;
     private String currentHash;
@@ -8,46 +6,42 @@ public class Block {
     private long timestamp;
     private int index;
 
-    public void setPreviousHash(String previousHash) {
+    void setPreviousHash(String previousHash) {
         this.previousHash = previousHash;
     }
-    public void setCurrentHash(String currentHash) {
+    void setCurrentHash(String currentHash) {
         this.currentHash = currentHash;
     }
-    public void setRecord(String record) {
+    void setRecord(String record) {
         this.record = record;
     }
-    public void setTimestamp(long timestamp) {
+    void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
-    public void setIndex(int index) {
+    void setIndex(int index) {
         this.index = index;
     }
 
-    public String getPreviousHash() {
+    String getPreviousHash() {
         return previousHash;
     }
-    public String getCurrentHash() {
+    String getCurrentHash() {
         return currentHash;
     }
-    public String getRecord() {
+    String getRecord() {
         return record;
     }
-    public int getIndex() {
+    int getIndex() {
         return index;
     }
-    public long getTimestamp() {
+    long getTimestamp() {
         return timestamp;
     }
 
 
-    public boolean isValid(Block oldBlock, Block newBlock){
-        if (oldBlock.getIndex()==newBlock.getIndex() ||
-                !oldBlock.getCurrentHash().equals(newBlock.getPreviousHash())){
-            return false;
-        } else {
-            return true;
-        }
+    boolean isValid(Block oldBlock, Block newBlock){
+        return oldBlock.getIndex()==newBlock.getIndex() &&
+                !oldBlock.getCurrentHash().equals(newBlock.getPreviousHash());
     }
 
 }

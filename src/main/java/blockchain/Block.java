@@ -1,6 +1,14 @@
 package blockchain;
 
-public class Block {
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Base64;
+
+public class Block implements Serializable {
     private String previousHash;
     private String currentHash;
     private String record;
@@ -23,6 +31,21 @@ public class Block {
     public boolean isValid(Block oldBlock, Block newBlock){
         return oldBlock.getIndex()!=newBlock.getIndex() &&
                 oldBlock.getCurrentHash().equals(newBlock.getPreviousHash());
+    }
+
+    public String serialise(Block block) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(block);
+        objectOutputStream.flush();
+        return new String(Base64.getEncoder().encode(byteArrayOutputStream.toByteArray()));
+    }
+
+    public Block deserialise(String str) throws IOException, ClassNotFoundException {
+        byte b[] = Base64.getDecoder().decode(str.getBytes());
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(b);
+        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        return (Block)objectInputStream.readObject();
     }
 
 }

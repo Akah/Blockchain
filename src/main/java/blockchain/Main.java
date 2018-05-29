@@ -1,35 +1,33 @@
 package blockchain;
 
+import network.Client;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.LinkedList;
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args){
-        // Hard coded genesis block
-        Block genesis = new Block();
-        genesis.setIndex(0);
-        genesis.setTimestamp(System.currentTimeMillis());
-        genesis.setCurrentHash(DigestUtils.sha256Hex("Digest"));
-        genesis.setRecord("genesis");
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        Client client = new Client();
+        client.startConnection("127.0.0.1",8000);
 
-        LinkedList<Block> blockchain = new LinkedList<>();
+        //Block last = client.requestLastBlock();
+        //System.out.println("first:");
+        //report(last);
 
-        blockchain.add(genesis);
-        blockchain.add(generateBlock(blockchain.get(0),"this is a test message"));
-        blockchain.add(generateBlock(blockchain.get(0),"this is another test message"));
+        client.sendBlock(generateBlock(new Block(),"this is a new block"));
 
-        System.out.println(blockchain);
-        //out put the blockchain
-        blockchain.forEach(Main::report);
+        //last = client.requestLastBlock();
+        //System.out.println("second:");
+        //report(last);
     }
 
     private static void report(Block block){
-        System.out.println("\nprevious: " + block.getPreviousHash());
-        System.out.println("current: " + block.getCurrentHash());
-        System.out.println("index: " + block.getIndex());
-        System.out.println("record: " + block.getRecord());
+        System.out.println( "\nprevious: " + block.getPreviousHash() +
+                "\ncurrent: " + block.getCurrentHash() +
+                "\nindex: " + block.getIndex() +
+                "\nrecord: " + block.getRecord()
+        );
     }
 
     private static Block generateBlock(Block oldBlock, String record){

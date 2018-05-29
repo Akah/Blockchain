@@ -1,5 +1,7 @@
 package network;
 
+import blockchain.Block;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,9 +19,20 @@ public class Client {
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
-    public String sendMessage(String msg) throws IOException{
+    private String sendMessage(String msg) throws IOException{
         out.println(msg);
         return in.readLine();
+    }
+
+    public Block requestLastBlock() throws IOException, ClassNotFoundException {
+        String response = sendMessage("01189998819991197253");
+        return new Block().deserialise(response);
+    }
+
+    public void sendBlock(Block block) throws IOException {
+        System.out.println(new Block().serialise(block));
+        sendMessage(new Block().serialise(block));
+        in.readLine();
     }
 
     public void stopConnection() throws IOException {

@@ -27,7 +27,7 @@ public class Server {
         genesis.setCurrentHash(DigestUtils.sha256Hex("Digest"));
         genesis.setRecord("genesis");
         blockchain.add(genesis);
-
+        int i = 0;
         serverSocket = new ServerSocket(port);
         while (true) {
             clientSocket = serverSocket.accept();
@@ -35,21 +35,31 @@ public class Server {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             String message = in.readLine();
+            String code = message.substring(0,3);
+            String body = message.substring(3,message.length());
 
-            switch (message) {
-                case "01189998819991197253":
+            System.out.println("client said ("+i+"): "+message);
+            switch (code) {
+                case "100":
                     out.println(new Block().serialise(blockchain.getLast()));
+                    System.out.println("code: 100");
+                    System.out.println("response :"+new Block().serialise(blockchain.getLast()));
                     break;
 
-                default:
-                    Block block = new Block().deserialise(message);
+                case "101":
+                    System.out.println("code: 101");
+                    out.println(new Block().serialise(blockchain.get(Integer.valueOf(body))));
+                    break;
+
+                case "200":
+                    System.out.println("code: 200");
+                    Block block = new Block().deserialise(body);
                     blockchain.add(block);
                     out.println("block added");
+                    System.out.println("response :block added");
                     break;
             }
-
-            out.println(message);
-            System.out.println("1 "+message);
+            i++;
         }
     }
 

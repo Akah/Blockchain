@@ -11,19 +11,27 @@ public class Main {
         Client client = new Client();
         client.startConnection("127.0.0.1",8000);
 
-        //Block last = client.requestLastBlock();
-        //System.out.println("first:");
-        //report(last);
+        Block last = client.getLastBlock();
+        System.out.println("first:");
+        report(last);
 
-        client.sendBlock(generateBlock(new Block(),"this is a new block"));
+        client.restart("127.0.0.1",8000);
 
-        //last = client.requestLastBlock();
-        //System.out.println("second:");
-        //report(last);
+        System.out.println("inbetween");
+
+        client.requestAddBlock(generateBlock(last,"this is a new block"));
+        report(client.getLastBlock());
+
+        client.restart("127.0.0.1",8000);
+
+        report(client.getNthBlock(3));
+
+        System.out.println("\nsecond:");
+        report(client.getLastBlock());
     }
 
     private static void report(Block block){
-        System.out.println( "\nprevious: " + block.getPreviousHash() +
+        System.out.println( "previous: " + block.getPreviousHash() +
                 "\ncurrent: " + block.getCurrentHash() +
                 "\nindex: " + block.getIndex() +
                 "\nrecord: " + block.getRecord()
@@ -43,6 +51,6 @@ public class Main {
                 newBlock.getIndex())
         );
 
-        return newBlock.isValid(oldBlock, newBlock) ? newBlock : null;
+        return newBlock.isValid(oldBlock, newBlock) ? newBlock : null; // causes the null pointer error
     }
 }

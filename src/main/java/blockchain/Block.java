@@ -42,7 +42,7 @@ public class Block implements Serializable {
     }
 
     public Block deserialise(String str) throws IOException, ClassNotFoundException {
-        byte b[] = Base64.getDecoder().decode(str.getBytes());
+        byte b[] = Base64.getDecoder().decode(str);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(b);
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
         return (Block)objectInputStream.readObject();

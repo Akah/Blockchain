@@ -19,25 +19,37 @@ public class Client {
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
-    private String sendMessage(String msg) throws IOException{
-        out.println(msg);
+    private String sendMessage(int code, String msg) throws IOException{
+        out.println(code+msg);
+        return in.readLine();
+    }
+    private String sendMessage(int code) throws IOException {
+        out.println(code);
         return in.readLine();
     }
 
-    public Block requestLastBlock() throws IOException, ClassNotFoundException {
-        String response = sendMessage("01189998819991197253");
+    public Block getLastBlock() throws IOException, ClassNotFoundException {
+        String response = sendMessage(100);
         return new Block().deserialise(response);
     }
 
-    public void sendBlock(Block block) throws IOException {
-        System.out.println(new Block().serialise(block));
-        sendMessage(new Block().serialise(block));
-        in.readLine();
+    public Block getNthBlock(int n) throws IOException, ClassNotFoundException{
+        String response = sendMessage(101, Integer.toString(n));
+        return new Block().deserialise(response);
+    }
+
+    public void requestAddBlock(Block block) throws IOException {
+        System.out.println(sendMessage(200, new Block().serialise(block)));
     }
 
     public void stopConnection() throws IOException {
         in.close();
         out.close();
         clientSocket.close();
+    }
+
+    public void restart(String ip, int port) throws IOException {
+        stopConnection();
+        startConnection(ip,port);
     }
 }
